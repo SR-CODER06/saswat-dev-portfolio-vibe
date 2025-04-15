@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const projects = [
   {
@@ -71,44 +72,67 @@ export function ProjectsSection() {
               key={index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ 
+                duration: 0.5,
+                delay: index * 0.1,
+                type: "spring",
+                stiffness: 100
+              }}
+              whileHover={{ 
+                y: -10,
+                transition: { duration: 0.3 }
+              }}
               viewport={{ once: true, margin: "-100px" }}
-              whileHover={{ y: -5 }}
-              className="bg-card rounded-xl overflow-hidden shadow-sm border border-border"
+              className="bg-card rounded-xl overflow-hidden shadow-sm border border-border group"
             >
-              {/* Project Image */}
-              <div className="h-48 overflow-hidden bg-muted">
+              <motion.div 
+                className="h-48 overflow-hidden bg-muted"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
                 <motion.img
                   src={project.image}
                   alt={project.project_name}
                   className="w-full h-full object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
                 />
-              </div>
+              </motion.div>
               
-              {/* Project Content */}
               <div className="p-5">
-                <h3 className="font-display text-lg font-bold mb-2">{project.project_name}</h3>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.description}</p>
+                <motion.h3 
+                  className="font-display text-lg font-bold mb-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {project.project_name}
+                </motion.h3>
                 
-                {/* Tags */}
+                <motion.p 
+                  className="text-muted-foreground text-sm mb-4 line-clamp-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {project.description}
+                </motion.p>
+                
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag, tagIndex) => (
-                    <motion.span
+                    <motion.div
                       key={tagIndex}
-                      className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full"
                       initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.1 + tagIndex * 0.05 }}
-                      viewport={{ once: true }}
                     >
-                      {tag}
-                    </motion.span>
+                      <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
+                        {tag}
+                      </Badge>
+                    </motion.div>
                   ))}
                 </div>
                 
-                {/* Links */}
                 <div className="flex gap-3">
                   <motion.a
                     href={project.code_link}
