@@ -1,14 +1,87 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { motion, useScroll, useSpring } from "framer-motion";
+import { Navbar } from "@/components/navbar";
+import { HeroSection } from "@/components/hero-section";
+import { AboutSection } from "@/components/about-section";
+import { ExperienceSection } from "@/components/experience-section";
+import { SkillsSection } from "@/components/skills-section";
+import { ProjectsSection } from "@/components/projects-section";
+import { ContactSection } from "@/components/contact-section";
+import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { ArrowUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 500) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="relative">
+      {/* Scroll Progress Indicator */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-50"
+        style={{ scaleX }}
+      />
+      
+      <Navbar />
+      <HeroSection />
+      <AboutSection />
+      <ExperienceSection />
+      <SkillsSection />
+      <ProjectsSection />
+      <ContactSection />
+      <Footer />
+      
+      {/* Scroll to top button */}
+      <AnimatedScrollTopButton show={showScrollTop} onClick={scrollToTop} />
     </div>
   );
 };
+
+const AnimatedScrollTopButton = ({ show, onClick }: { show: boolean; onClick: () => void }) => (
+  <motion.div
+    className="fixed bottom-6 right-6 z-40"
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: show ? 1 : 0,
+      scale: show ? 1 : 0,
+    }}
+    transition={{ duration: 0.3 }}
+  >
+    <Button
+      onClick={onClick}
+      size="icon"
+      className="rounded-full shadow-lg h-12 w-12"
+      variant="secondary"
+    >
+      <ArrowUp className="h-5 w-5" />
+      <span className="sr-only">Scroll to top</span>
+    </Button>
+  </motion.div>
+);
 
 export default Index;
