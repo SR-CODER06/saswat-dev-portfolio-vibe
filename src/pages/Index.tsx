@@ -1,3 +1,4 @@
+
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
@@ -51,14 +52,17 @@ const Index = () => {
         style={{ scaleX }}
       />
       
-      <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <ExperienceSection />
-      <SkillsSection />
-      <ProjectsSection />
-      <ContactSection />
-      <Footer />
+      {/* Add 3D perspective wrapper */}
+      <div className="perspective-[1000px]">
+        <Navbar />
+        <HeroSection />
+        <AboutSection />
+        <ExperienceSection />
+        <SkillsSection />
+        <ProjectsSection />
+        <ContactSection />
+        <Footer />
+      </div>
       
       <AnimatedScrollTopButton show={showScrollTop} onClick={scrollToTop} />
     </div>

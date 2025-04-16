@@ -7,7 +7,7 @@ const SplashCursor = () => {
   const [clicked, setClicked] = useState(false);
   const cursorRef = useRef<HTMLDivElement>(null);
   
-  // Glowing light that follows cursor
+  // Glowing light that follows cursor with gradient
   const glowX = useMotionValue(0);
   const glowY = useMotionValue(0);
   
@@ -21,13 +21,13 @@ const SplashCursor = () => {
     const handleClick = (e: MouseEvent) => {
       setClicked(true);
       
-      // Create multiple splash particles for better effect
+      // Create multiple splash particles with gradient
       for (let i = 0; i < 5; i++) {
         const splash = document.createElement('div');
         splash.className = 'fixed pointer-events-none rounded-full mix-blend-screen';
         splash.style.left = `${e.clientX}px`;
         splash.style.top = `${e.clientY}px`;
-        splash.style.backgroundColor = `hsl(var(--primary) / ${0.3 - i * 0.05})`;
+        splash.style.background = `linear-gradient(45deg, rgb(139, 92, 246, ${0.3 - i * 0.05}), rgb(236, 72, 153, ${0.3 - i * 0.05}))`;
         splash.style.transform = 'translate(-50%, -50%)';
         document.body.appendChild(splash);
         
@@ -57,11 +57,11 @@ const SplashCursor = () => {
   
   return (
     <div className="fixed pointer-events-none inset-0 z-50">
-      {/* Glowing light effect */}
+      {/* Gradient glowing light effect */}
       <motion.div
         className="fixed w-[150px] h-[150px] rounded-full mix-blend-screen pointer-events-none"
         style={{
-          background: "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgb(139, 92, 246) 0%, rgb(236, 72, 153) 40%, transparent 70%)",
           opacity: 0.15,
           x: glowX,
           y: glowY,
@@ -72,7 +72,10 @@ const SplashCursor = () => {
       
       {clicked && (
         <motion.div
-          className="fixed top-0 left-0 rounded-full bg-primary/30 mix-blend-screen"
+          className="fixed top-0 left-0 rounded-full mix-blend-screen"
+          style={{
+            background: "linear-gradient(45deg, rgb(139, 92, 246, 0.3), rgb(236, 72, 153, 0.3))"
+          }}
           initial={{ 
             x: position.x,
             y: position.y,
