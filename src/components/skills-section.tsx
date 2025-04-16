@@ -1,25 +1,12 @@
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { getSkillIcon } from "@/lib/skill-icons";
 
 const skills = [
-  "HTML",
-  "CSS",
-  "JavaScript",
-  "React",
-  "React Native",
-  "Node.js",
-  "Express.js",
-  "MongoDB",
-  "Git",
-  "GitHub",
-  "Tailwind",
-  "Bootstrap",
-  "Java (SE)",
-  "C",
-  "Django REST Framework",
-  "Swift",
+  "HTML", "CSS", "JavaScript", "React", "React Native", "Node.js",
+  "Express.js", "MongoDB", "Git", "GitHub", "Tailwind", "Bootstrap",
+  "Java (SE)", "C", "Django REST Framework", "Swift",
 ];
 
 const categories = [
@@ -45,13 +32,16 @@ export function SkillsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
-  // Thread animation variants
+  // Thread animation variants - enhanced
   const threadVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, pathLength: 0 },
     visible: (i: number) => ({
       opacity: 1,
+      pathLength: 1,
       transition: {
         delay: i * 0.1,
+        duration: 1.5,
+        ease: "easeInOut"
       },
     }),
   };
@@ -68,40 +58,65 @@ export function SkillsSection() {
     },
   };
 
-  // Item variants for the skill items
+  // Item variants for the skill items - enhanced
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 20, opacity: 0, scale: 0.9 },
     visible: {
       y: 0,
       opacity: 1,
+      scale: 1,
       transition: {
         type: "spring",
-        stiffness: 100,
+        stiffness: 260,
+        damping: 20,
       },
     },
   };
 
+  // Text pressure effect for skill names
+  const TextPressure = ({ children }: { children: React.ReactNode }) => {
+    const [isPressed, setIsPressed] = useState(false);
+    
+    return (
+      <motion.span
+        className="inline-block cursor-pointer"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onMouseDown={() => setIsPressed(true)}
+        onMouseUp={() => setIsPressed(false)}
+        onMouseLeave={() => setIsPressed(false)}
+        animate={{
+          color: isPressed ? "hsl(var(--primary))" : "currentColor",
+          fontWeight: isPressed ? "700" : "inherit"
+        }}
+        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      >
+        {children}
+      </motion.span>
+    );
+  };
+
   return (
     <section id="skills" className="py-20 section-padding overflow-hidden relative">
-      {/* Shape blur background effect */}
-      <div className="absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full">
+      {/* Enhanced Shape blur background effect */}
+      <div className="absolute -z-10 inset-0 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isInView ? 0.7 : 0 }}
+          transition={{ duration: 1.5 }}
+          className="absolute top-1/4 -left-20 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px]"
+        />
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: isInView ? 0.6 : 0 }}
-          transition={{ duration: 1.5 }}
-          className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-primary/20 blur-[100px]"
+          transition={{ duration: 1.5, delay: 0.3 }}
+          className="absolute bottom-1/4 -right-20 w-[500px] h-[500px] rounded-full bg-secondary/20 blur-[150px]"
         />
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: isInView ? 0.5 : 0 }}
-          transition={{ duration: 1.5, delay: 0.3 }}
-          className="absolute bottom-1/4 -right-20 w-96 h-96 rounded-full bg-secondary/20 blur-[100px]"
-        />
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isInView ? 0.4 : 0 }}
           transition={{ duration: 1.5, delay: 0.6 }}
-          className="absolute top-1/2 left-1/2 w-96 h-96 rounded-full bg-accent/20 blur-[100px] transform -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-1/2 left-1/2 w-[600px] h-[600px] rounded-full bg-accent/20 blur-[180px] transform -translate-x-1/2 -translate-y-1/2"
         />
       </div>
 
@@ -112,10 +127,17 @@ export function SkillsSection() {
           transition={{ duration: 0.8 }}
           className="mb-16 text-center"
         >
-          <h2 className="section-heading">My Skills</h2>
-          <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
+          <h2 className="section-heading">
+            <TextPressure>My Skills</TextPressure>
+          </h2>
+          <motion.div 
+            className="w-20 h-1 bg-primary mx-auto mb-6"
+            initial={{ width: 0 }}
+            animate={isInView ? { width: 80 } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          ></motion.div>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            These are the technologies I've worked with and I'm comfortable using:
+            <TextPressure>These are the technologies I've worked with and I'm comfortable using:</TextPressure>
           </p>
         </motion.div>
 
@@ -129,23 +151,65 @@ export function SkillsSection() {
             <motion.div
               key={categoryIndex}
               variants={itemVariants}
-              className="bg-card rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden relative group"
+              className="bg-card rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden relative group backdrop-blur-sm"
             >
-              {/* Category card with gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Enhanced category card with gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"></div>
+              
+              {/* Threading effect around the card */}
+              <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                <svg className="absolute inset-0 w-full h-full">
+                  <motion.rect
+                    width="100%"
+                    height="100%"
+                    rx="12"
+                    ry="12"
+                    fill="none"
+                    stroke="hsl(var(--primary) / 0.3)"
+                    strokeWidth="1"
+                    strokeDasharray="8 8"
+                    initial={{ pathLength: 0 }}
+                    animate={isInView ? 
+                      { 
+                        pathLength: [0, 1], 
+                        opacity: [0, 0.8, 0.2],
+                        strokeDashoffset: [0, -100]
+                      } : 
+                      { pathLength: 0 }
+                    }
+                    transition={{ 
+                      duration: 3, 
+                      delay: categoryIndex * 0.2,
+                      repeat: Infinity,
+                      repeatType: "loop"
+                    }}
+                  />
+                </svg>
+              </div>
               
               <div className="p-6">
-                <h3 className="font-display text-xl font-bold mb-6 text-center relative">
-                  {category.name}
-                  <span className="block w-12 h-1 bg-primary/50 mx-auto mt-2 rounded"></span>
-                </h3>
+                <motion.h3 
+                  className="font-display text-xl font-bold mb-6 text-center relative"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                  transition={{ delay: categoryIndex * 0.1 + 0.3 }}
+                >
+                  <TextPressure>{category.name}</TextPressure>
+                  <motion.span 
+                    className="block w-12 h-1 bg-primary/50 mx-auto mt-2 rounded"
+                    initial={{ width: 0 }}
+                    animate={isInView ? { width: 48 } : { width: 0 }}
+                    transition={{ duration: 0.8, delay: categoryIndex * 0.1 + 0.5 }}
+                  ></motion.span>
+                </motion.h3>
 
                 <div className="flex flex-wrap gap-3 justify-center">
                   {category.skills.map((skill, skillIndex) => (
                     <motion.div
                       key={skillIndex}
                       custom={skillIndex}
-                      variants={threadVariants}
+                      variants={itemVariants}
                       whileHover={{ 
                         scale: 1.1,
                         boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
@@ -167,9 +231,9 @@ export function SkillsSection() {
                       >
                         {getSkillIcon(skill)}
                       </motion.div>
-                      <span>{skill}</span>
+                      <TextPressure>{skill}</TextPressure>
                       
-                      {/* Thread effect */}
+                      {/* Enhanced Thread effect */}
                       <motion.span
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: [0, 1, 0] }}
@@ -181,6 +245,20 @@ export function SkillsSection() {
                           delay: skillIndex * 0.1,
                         }}
                         className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent origin-left"
+                      ></motion.span>
+                      
+                      {/* Pulse effect on hover */}
+                      <motion.span
+                        className="absolute inset-0 rounded-lg bg-primary/0"
+                        initial={{ opacity: 0 }}
+                        whileHover={{
+                          opacity: [0, 0.2, 0],
+                          scale: [1, 1.05, 1],
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                        }}
                       ></motion.span>
                     </motion.div>
                   ))}
@@ -196,8 +274,42 @@ export function SkillsSection() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="max-w-3xl mx-auto"
         >
-          <div className="bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 p-8 rounded-xl backdrop-blur-sm">
-            <h3 className="font-display text-xl font-bold mb-5 text-center">All Skills</h3>
+          <motion.div 
+            className="bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 p-8 rounded-xl backdrop-blur-sm relative overflow-hidden"
+            whileHover={{ boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.1)" }}
+          >
+            {/* Threading effect around the card */}
+            <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+              <svg className="absolute inset-0 w-full h-full">
+                <motion.rect
+                  width="100%"
+                  height="100%"
+                  rx="12"
+                  ry="12"
+                  fill="none"
+                  stroke="hsl(var(--primary) / 0.3)"
+                  strokeWidth="1"
+                  initial={{ pathLength: 0 }}
+                  animate={isInView ? 
+                    { 
+                      pathLength: 1, 
+                      strokeDasharray: ["1, 30", "30, 200"],
+                      strokeDashoffset: [0, 100]
+                    } : 
+                    { pathLength: 0 }
+                  }
+                  transition={{ 
+                    duration: 8, 
+                    repeat: Infinity,
+                    repeatType: "loop"
+                  }}
+                />
+              </svg>
+            </div>
+            
+            <h3 className="font-display text-xl font-bold mb-5 text-center">
+              <TextPressure>All Skills</TextPressure>
+            </h3>
             <div className="flex flex-wrap gap-3 justify-center">
               {skills.map((skill, index) => (
                 <motion.div
@@ -211,8 +323,8 @@ export function SkillsSection() {
                     backgroundColor: "hsl(var(--primary) / 0.1)",
                   }}
                 >
-                  {/* Aurora effect for skill pill */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 via-primary/10 to-secondary/0 opacity-0 group-hover:opacity-100 blur-sm transition-opacity"></div>
+                  {/* Enhanced aurora effect for skill pill */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 via-primary/20 to-secondary/0 opacity-0 group-hover:opacity-100 blur-sm transition-opacity"></div>
                   
                   <motion.div 
                     animate={{ rotate: [0, 10, -10, 0] }}
@@ -226,11 +338,11 @@ export function SkillsSection() {
                   >
                     {getSkillIcon(skill)}
                   </motion.div>
-                  <span>{skill}</span>
+                  <TextPressure>{skill}</TextPressure>
                 </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

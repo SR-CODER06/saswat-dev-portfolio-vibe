@@ -1,4 +1,3 @@
-
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
@@ -12,18 +11,60 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 
-// Splash cursor component
+// Enhanced Splash Cursor
 const SplashCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [clicked, setClicked] = useState(false);
+  const [isPointer, setIsPointer] = useState(false);
+  const cursorRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
+      
+      // Check if hovering over clickable elements
+      const element = document.elementFromPoint(e.clientX, e.clientY);
+      if (element) {
+        const computedStyle = window.getComputedStyle(element);
+        setIsPointer(
+          computedStyle.cursor === 'pointer' || 
+          element.tagName === 'A' || 
+          element.tagName === 'BUTTON' ||
+          element.classList.contains('cursor-pointer')
+        );
+      } else {
+        setIsPointer(false);
+      }
     };
     
-    const handleClick = () => {
+    const handleClick = (e: MouseEvent) => {
       setClicked(true);
+      
+      // Create multiple splash particles for better effect
+      for (let i = 0; i < 3; i++) {
+        const splash = document.createElement('div');
+        splash.className = 'fixed pointer-events-none rounded-full mix-blend-difference';
+        splash.style.left = `${e.clientX}px`;
+        splash.style.top = `${e.clientY}px`;
+        splash.style.backgroundColor = `hsl(var(--primary) / ${0.2 - i * 0.05})`;
+        splash.style.transform = 'translate(-50%, -50%)';
+        
+        document.body.appendChild(splash);
+        
+        // Animate with different timing for each particle
+        setTimeout(() => {
+          splash.style.transition = `all ${600 + i * 100}ms cubic-bezier(0.1, 0.8, 0.3, 1)`;
+          splash.style.width = `${200 + i * 50}px`;
+          splash.style.height = `${200 + i * 50}px`;
+          splash.style.opacity = '0';
+        }, 10);
+        
+        // Remove after animation
+        setTimeout(() => {
+          document.body.removeChild(splash);
+        }, 800 + i * 100);
+      }
+      
       setTimeout(() => setClicked(false), 500);
     };
     
@@ -39,10 +80,12 @@ const SplashCursor = () => {
   return (
     <div className="fixed pointer-events-none inset-0 z-50">
       <motion.div
-        className="fixed top-0 left-0 w-6 h-6 rounded-full border-2 border-primary mix-blend-difference"
+        ref={cursorRef}
+        className="fixed top-0 left-0 mix-blend-difference"
         animate={{
-          x: position.x - 12,
-          y: position.y - 12,
+          x: position.x,
+          y: position.y,
+          scale: clicked ? 0.8 : 1,
         }}
         transition={{
           type: "spring",
@@ -50,16 +93,29 @@ const SplashCursor = () => {
           stiffness: 500,
           restDelta: 0.001,
         }}
-      />
+        style={{ translateX: '-50%', translateY: '-50%' }}
+      >
+        <motion.div 
+          className="rounded-full border-2 border-primary"
+          animate={{
+            width: isPointer ? '30px' : '20px',
+            height: isPointer ? '30px' : '20px',
+            opacity: 0.8
+          }}
+          transition={{ duration: 0.2 }}
+        />
+      </motion.div>
       
       {clicked && (
         <motion.div
-          className="fixed top-0 left-0 w-10 h-10 rounded-full bg-primary/30 mix-blend-difference"
+          className="fixed top-0 left-0 rounded-full bg-primary/30 mix-blend-difference"
           initial={{ 
-            x: position.x - 20,
-            y: position.y - 20,
+            x: position.x,
+            y: position.y,
             scale: 0, 
             opacity: 1,
+            translateX: '-50%',
+            translateY: '-50%'
           }}
           animate={{ 
             scale: 3, 
@@ -106,7 +162,7 @@ const Index = () => {
 
   return (
     <div className="relative">
-      {/* Only show splash cursor on client-side */}
+      {/* Show splash cursor on client-side */}
       {isMounted && <SplashCursor />}
       
       {/* Scroll Progress Indicator */}
@@ -146,8 +202,9 @@ const AnimatedScrollTopButton = ({ show, onClick }: { show: boolean; onClick: ()
       className="rounded-full shadow-lg h-12 w-12 relative group overflow-hidden"
       variant="secondary"
     >
-      {/* Aurora effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/30 to-secondary/0 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300"></div>
+      {/* Enhanced Aurora effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/40 to-secondary/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 group-hover:animate-pulse-slow"></div>
       
       <ArrowUp className="h-5 w-5 relative z-10" />
       <span className="sr-only">Scroll to top</span>

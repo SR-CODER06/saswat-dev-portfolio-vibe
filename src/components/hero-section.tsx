@@ -1,3 +1,4 @@
+
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, MousePointer, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -63,6 +64,92 @@ const DecryptedText = ({ text }: { text: string }) => {
   return <span>{displayText}</span>;
 };
 
+// Text Pressure Effect
+const TextPressure = ({ children }: { children: React.ReactNode }) => {
+  const [isPressed, setIsPressed] = useState(false);
+  
+  return (
+    <motion.span
+      className="inline-block cursor-pointer"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      onMouseLeave={() => setIsPressed(false)}
+      animate={{
+        color: isPressed ? "hsl(var(--primary))" : "currentColor",
+        fontWeight: isPressed ? "700" : "inherit"
+      }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+    >
+      {children}
+    </motion.span>
+  );
+};
+
+// Text Cursor Component
+const TextCursor = () => {
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isTyping, setIsTyping] = useState(false);
+  const [visible, setVisible] = useState(true);
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    const handleMouseDown = () => setIsTyping(true);
+    const handleMouseUp = () => setIsTyping(false);
+    
+    // Blink effect
+    const blinkInterval = setInterval(() => {
+      setVisible(prev => !prev);
+    }, 500);
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+      clearInterval(blinkInterval);
+    };
+  }, []);
+  
+  return (
+    <motion.div
+      ref={cursorRef}
+      className="fixed top-0 left-0 z-50 pointer-events-none mix-blend-difference"
+      animate={{
+        x: position.x,
+        y: position.y,
+        opacity: visible ? 1 : 0.5,
+        height: isTyping ? '20px' : '30px'
+      }}
+      transition={{
+        type: 'spring',
+        damping: 25,
+        stiffness: 300,
+        mass: 0.5
+      }}
+    >
+      <motion.div 
+        className="w-[2px] h-full bg-primary"
+        animate={{ 
+          scaleY: isTyping ? [1, 0.7, 1] : 1 
+        }}
+        transition={{ 
+          duration: 0.15, 
+          repeat: isTyping ? Infinity : 0 
+        }}
+      />
+    </motion.div>
+  );
+};
+
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -96,6 +183,9 @@ export function HeroSection() {
       onMouseMove={handleMouseMove}
       className="min-h-screen flex items-center justify-center pt-16 section-padding relative overflow-hidden"
     >
+      {/* Text Cursor for the entire site */}
+      <TextCursor />
+      
       {/* Grid Distortion Background */}
       <div className="absolute inset-0 -z-10 grid grid-cols-12 grid-rows-12 opacity-20">
         {Array.from({ length: 144 }).map((_, i) => (
@@ -116,13 +206,15 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Background Decorations with Shape Blur */}
-      <div className="absolute inset-0 -z-10">
+      {/* Enhanced Background Decorations with Shape Blur */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
         <motion.div 
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/20 blur-3xl"
+          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/20 blur-[80px]"
           animate={{ 
             x: [0, 30, 0],
             y: [0, -30, 0],
+            scale: [1, 1.2, 1],
+            opacity: [0.6, 0.8, 0.6]
           }}
           transition={{
             duration: 8,
@@ -131,10 +223,12 @@ export function HeroSection() {
           }}
         />
         <motion.div 
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-secondary/20 blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-secondary/20 blur-[120px]"
           animate={{ 
             x: [0, -20, 0],
             y: [0, 20, 0],
+            scale: [1.2, 1, 1.2],
+            opacity: [0.7, 0.5, 0.7]
           }}
           transition={{
             duration: 7,
@@ -143,12 +237,26 @@ export function HeroSection() {
           }}
         />
         <motion.div 
-          className="absolute top-1/2 left-1/2 w-80 h-80 rounded-full bg-accent/20 blur-3xl transform -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-1/2 left-1/2 w-[500px] h-[500px] rounded-full bg-accent/15 blur-[150px] transform -translate-x-1/2 -translate-y-1/2"
           animate={{ 
-            scale: [1, 1.2, 1],
+            scale: [1, 1.3, 1],
+            opacity: [0.5, 0.7, 0.5]
           }}
           transition={{
             duration: 10,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+        <motion.div 
+          className="absolute top-3/4 left-1/3 w-64 h-64 rounded-full bg-primary/15 blur-[100px]"
+          animate={{ 
+            x: [0, 40, 0],
+            y: [0, -40, 0],
+            opacity: [0.4, 0.6, 0.4]
+          }}
+          transition={{
+            duration: 9,
             repeat: Infinity,
             repeatType: "reverse"
           }}
@@ -195,7 +303,7 @@ export function HeroSection() {
             style={{ rotateX, rotateY }}
             className="font-display text-4xl md:text-6xl font-bold leading-tight mb-6 perspective-1000"
           >
-            Hi, I'm{" "}
+            <TextPressure>Hi, I'm{" "}</TextPressure>
             <motion.span 
               className="gradient-text relative inline-block"
               whileHover={{
@@ -213,7 +321,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground mb-10"
           >
-            A passionate Front-end React Developer & MERN stack Developer based in Bhubaneswar.
+            <TextPressure>A passionate Front-end React Developer & MERN stack Developer based in Bhubaneswar.</TextPressure>
           </motion.p>
 
           <motion.div
@@ -228,8 +336,9 @@ export function HeroSection() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              {/* Aurora button effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/30 to-secondary/0 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></div>
+              {/* Enhanced Aurora button effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/40 to-secondary/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 group-hover:animate-pulse-slow"></div>
               
               <span className="relative z-10">Contact Me</span>
               <motion.div
@@ -247,8 +356,9 @@ export function HeroSection() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              {/* Aurora button effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-secondary/0 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></div>
+              {/* Enhanced Aurora button effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/30 to-secondary/10 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 group-hover:animate-pulse-slow"></div>
               
               <span className="relative z-10">View Projects</span>
             </motion.a>
