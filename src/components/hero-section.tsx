@@ -1,4 +1,3 @@
-
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, MousePointer, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -40,9 +39,11 @@ const DecryptedText = ({ text }: { text: string }) => {
     const decrypt = () => {
       interval = setInterval(() => {
         setDisplayText(prev => {
-          return text.substring(0, iteration) + 
-            Array(text.length - iteration)
-              .fill(0)
+          const textLength = text.length - Math.floor(iteration);
+          const remainingLength = textLength > 0 ? textLength : 0;
+          
+          return text.substring(0, Math.floor(iteration)) + 
+            Array.from({ length: remainingLength })
               .map(() => characters[Math.floor(Math.random() * characters.length)])
               .join("");
         });
