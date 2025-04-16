@@ -1,3 +1,4 @@
+
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
@@ -11,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 
-// Enhanced Splash Cursor
+// Splash Cursor Component
 const SplashCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [clicked, setClicked] = useState(false);
@@ -51,7 +52,6 @@ const SplashCursor = () => {
         
         document.body.appendChild(splash);
         
-        // Animate with different timing for each particle
         setTimeout(() => {
           splash.style.transition = `all ${600 + i * 100}ms cubic-bezier(0.1, 0.8, 0.3, 1)`;
           splash.style.width = `${200 + i * 50}px`;
@@ -59,7 +59,6 @@ const SplashCursor = () => {
           splash.style.opacity = '0';
         }, 10);
         
-        // Remove after animation
         setTimeout(() => {
           document.body.removeChild(splash);
         }, 800 + i * 100);
@@ -130,6 +129,30 @@ const SplashCursor = () => {
   );
 };
 
+// Grid Distortion Background
+const GridDistortion = () => {
+  return (
+    <div className="absolute inset-0 -z-10 grid grid-cols-12 grid-rows-12 opacity-20">
+      {Array.from({ length: 144 }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="border-[0.5px] border-primary/20"
+          initial={{ opacity: 0.2 }}
+          animate={{ 
+            scale: [1, 1.1 + Math.random() * 0.1, 1],
+            opacity: [0.2, 0.3, 0.2],
+          }}
+          transition={{
+            duration: 5 + Math.random() * 5,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const Index = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -162,10 +185,8 @@ const Index = () => {
 
   return (
     <div className="relative">
-      {/* Show splash cursor on client-side */}
-      {isMounted && <SplashCursor />}
+      <SplashCursor />
       
-      {/* Scroll Progress Indicator */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-primary z-50"
         style={{ scaleX }}
@@ -180,7 +201,6 @@ const Index = () => {
       <ContactSection />
       <Footer />
       
-      {/* Scroll to top button */}
       <AnimatedScrollTopButton show={showScrollTop} onClick={scrollToTop} />
     </div>
   );
