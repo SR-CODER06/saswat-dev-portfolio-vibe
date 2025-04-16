@@ -1,7 +1,7 @@
-
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, MousePointer, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import TextPressure from "./TextPressure";
 
 // Rotating text component
 const RotatingText = ({ texts }: { texts: string[] }) => {
@@ -62,29 +62,6 @@ const DecryptedText = ({ text }: { text: string }) => {
   }, [text]);
   
   return <span>{displayText}</span>;
-};
-
-// Text Pressure Effect
-const TextPressure = ({ children }: { children: React.ReactNode }) => {
-  const [isPressed, setIsPressed] = useState(false);
-  
-  return (
-    <motion.span
-      className="inline-block cursor-pointer"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onMouseLeave={() => setIsPressed(false)}
-      animate={{
-        color: isPressed ? "hsl(var(--primary))" : "currentColor",
-        fontWeight: isPressed ? "700" : "inherit"
-      }}
-      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-    >
-      {children}
-    </motion.span>
-  );
 };
 
 // Text Cursor Component
@@ -183,9 +160,6 @@ export function HeroSection() {
       onMouseMove={handleMouseMove}
       className="min-h-screen flex items-center justify-center pt-16 section-padding relative overflow-hidden"
     >
-      {/* Text Cursor for the entire site */}
-      <TextCursor />
-      
       {/* Grid Distortion Background */}
       <div className="absolute inset-0 -z-10 grid grid-cols-12 grid-rows-12 opacity-20">
         {Array.from({ length: 144 }).map((_, i) => (
@@ -304,15 +278,9 @@ export function HeroSection() {
             className="font-display text-4xl md:text-6xl font-bold leading-tight mb-6 perspective-1000"
           >
             <TextPressure>Hi, I'm{" "}</TextPressure>
-            <motion.span 
-              className="gradient-text relative inline-block"
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.2 }
-              }}
-            >
+            <TextPressure className="gradient-text">
               <DecryptedText text="Saswat Ranjan" />
-            </motion.span>
+            </TextPressure>
           </motion.h1>
 
           <motion.p
@@ -321,7 +289,9 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground mb-10"
           >
-            <TextPressure>A passionate Front-end React Developer & MERN stack Developer based in Bhubaneswar.</TextPressure>
+            <TextPressure>
+              A passionate Front-end React Developer & MERN stack Developer based in Bhubaneswar.
+            </TextPressure>
           </motion.p>
 
           <motion.div
