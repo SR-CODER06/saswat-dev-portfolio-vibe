@@ -1,6 +1,6 @@
 
+import React, { ReactNode, memo } from "react";
 import { motion } from "framer-motion";
-import { ReactNode, memo } from "react";
 
 interface TextPressureProps {
   children: ReactNode;

@@ -1,15 +1,17 @@
 
-import { createRoot } from 'react-dom/client';
 import React from 'react';
+import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
-// Use createRoot API for better Concurrent Mode support
+// Get the root element
 const rootElement = document.getElementById("root");
+
+// Make sure the element exists before rendering
 if (rootElement) {
   const root = createRoot(rootElement);
   
-  // Use production mode rendering for better performance
+  // Render the app
   root.render(
     <React.StrictMode>
       <App />
