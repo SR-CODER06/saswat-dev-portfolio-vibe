@@ -9,20 +9,18 @@ interface TextPressureProps {
 
 // Performance-optimized TextPressure component
 const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
-  // Pre-defined animation variants to reduce calculations on hover
+  // Pre-defined animation variants with reduced intensity
   const hoverVariants = {
     initial: { 
       scale: 1,
-      // Using hex values instead of rgb/hsl for better color animation performance
-      color: "#000000",
+      color: "currentColor",
     },
     hover: { 
-      scale: 1.02,
-      color: "#8B5CF6",
-      transition: { duration: 0.15 }
+      scale: 1.01, // Reduced scale effect
+      transition: { duration: 0.12 } // Faster transition
     },
     tap: { 
-      scale: 0.98 
+      scale: 0.99 
     }
   };
   
@@ -33,8 +31,8 @@ const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
     },
     hover: { 
       scaleX: 1, 
-      opacity: 1,
-      transition: { duration: 0.15 }
+      opacity: 0.8,
+      transition: { duration: 0.12 } // Faster transition
     }
   };
 
@@ -45,16 +43,24 @@ const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
       initial="initial"
       whileHover="hover"
       whileTap="tap"
-      // Reduce DOM changes with better will-change hints
-      style={{ willChange: "transform" }}
+      // Only apply hover animations to larger screens
+      whileHover={window.innerWidth > 768 ? "hover" : "initial"}
+      style={{ 
+        willChange: "transform",
+        // Use RGB values for colors to avoid HSL animation issues
+        color: "currentColor" 
+      }}
     >
       {children}
       <motion.span 
-        className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
+        className="absolute bottom-0 left-0 w-full h-[1px]"
+        style={{ 
+          background: "currentColor",
+          opacity: 0.3,
+          willChange: "transform, opacity" 
+        }}
         variants={underlineVariants}
         initial="initial"
-        // Using static will-change for better performance on animation
-        style={{ willChange: "transform, opacity" }}
       />
     </motion.span>
   );

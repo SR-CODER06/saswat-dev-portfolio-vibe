@@ -1,24 +1,26 @@
+
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
 import { AboutSection } from "@/components/about-section";
 import { ExperienceSection } from "@/components/experience-section";
 import { SkillsSection } from "@/components/skills-section";
-import { ProjectsSection } from "@/components/projects-section";
 import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import SplashCursor from "@/components/SplashCursor";
-import StarryBackground from "@/components/StarryBackground";
+
+// Lazily load the starry background for better initial load performance
+const StarryBackground = lazy(() => import("@/components/StarryBackground"));
 
 const Index = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
+    stiffness: 50, // Lower stiffness for smoother animation
+    damping: 20, // Lower damping for smoother animation
+    restDelta: 0.01, // Higher threshold for stopping the animation
   });
   
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -27,16 +29,27 @@ const Index = () => {
   useEffect(() => {
     setIsMounted(true); // For handling client-side only features
     
+    // Throttled scroll handler for better performance
+    let timeoutId: number | null = null;
+    
     const handleScroll = () => {
-      if (window.scrollY > 500) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
+      if (timeoutId === null) {
+        timeoutId = window.setTimeout(() => {
+          if (window.scrollY > 500) {
+            setShowScrollTop(true);
+          } else {
+            setShowScrollTop(false);
+          }
+          timeoutId = null;
+        }, 100);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
   }, []);
   
   const scrollToTop = () => {
@@ -45,22 +58,25 @@ const Index = () => {
 
   return (
     <div className="relative">
-      <SplashCursor />
-      <StarryBackground />
+      {/* Only render cursor effect on desktop */}
+      {isMounted && window.innerWidth > 768 && <SplashCursor />}
+      
+      {/* Lazy load the starry background */}
+      <Suspense fallback={null}>
+        {isMounted && <StarryBackground />}
+      </Suspense>
       
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-primary z-50"
-        style={{ scaleX }}
+        style={{ scaleX, transformOrigin: "0% 0%" }}
       />
       
-      {/* 3D perspective wrapper */}
-      <div className="perspective-[1000px]">
+      <div>
         <Navbar />
         <HeroSection />
         <AboutSection />
         <ExperienceSection />
         <SkillsSection />
-        <ProjectsSection />
         <ContactSection />
         <Footer />
       </div>
@@ -83,13 +99,10 @@ const AnimatedScrollTopButton = ({ show, onClick }: { show: boolean; onClick: ()
     <Button
       onClick={onClick}
       size="icon"
-      className="rounded-full shadow-lg h-12 w-12 relative group overflow-hidden"
+      className="rounded-full shadow-lg h-10 w-10"
       variant="secondary"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/40 to-secondary/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 group-hover:animate-pulse-slow"></div>
-      
-      <ArrowUp className="h-5 w-5 relative z-10" />
+      <ArrowUp className="h-4 w-4" />
       <span className="sr-only">Scroll to top</span>
     </Button>
   </motion.div>

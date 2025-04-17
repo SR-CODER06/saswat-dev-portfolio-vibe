@@ -11,37 +11,48 @@ const SplashCursor = () => {
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
   
-  // Handle mouse movements and clicks
+  // Handle mouse movements and clicks with optimizations
   useEffect(() => {
     let splashCounter = 0;
+    let throttleTimer: number | null = null;
     
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
+      // Throttle mouse move updates
+      if (!throttleTimer) {
+        throttleTimer = window.setTimeout(() => {
+          setPosition({ x: e.clientX, y: e.clientY });
+          cursorX.set(e.clientX);
+          cursorY.set(e.clientY);
+          throttleTimer = null;
+        }, 20); // 50 fps throttle
+      }
     };
     
     const handleMouseDown = (e: MouseEvent) => {
       setIsClicking(true);
-      const newSplash = {
-        id: splashCounter++,
-        x: e.clientX,
-        y: e.clientY
-      };
       
-      setSplashes(prev => [...prev, newSplash]);
-      
-      // Remove splash after animation completes
-      setTimeout(() => {
-        setSplashes(prev => prev.filter(splash => splash.id !== newSplash.id));
-      }, 1000);
+      // Limit number of active splashes to 3 for performance
+      if (splashes.length < 3) {
+        const newSplash = {
+          id: splashCounter++,
+          x: e.clientX,
+          y: e.clientY
+        };
+        
+        setSplashes(prev => [...prev, newSplash]);
+        
+        // Remove splash after animation completes
+        setTimeout(() => {
+          setSplashes(prev => prev.filter(splash => splash.id !== newSplash.id));
+        }, 800);
+      }
     };
     
     const handleMouseUp = () => {
       setIsClicking(false);
     };
     
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
     
@@ -49,17 +60,18 @@ const SplashCursor = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
+      if (throttleTimer) clearTimeout(throttleTimer);
     };
-  }, []);
+  }, [splashes.length]);
   
   return (
     <div className="fixed pointer-events-none inset-0 z-50">
-      {/* Main cursor glow effect */}
+      {/* Main cursor glow effect - reduced size and opacity */}
       <motion.div
-        className="fixed w-[180px] h-[180px] rounded-full mix-blend-screen pointer-events-none"
+        className="fixed w-[100px] h-[100px] rounded-full mix-blend-screen pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.8) 0%, rgba(236, 72, 153, 0.6) 30%, transparent 70%)",
-          opacity: 0.2,
+          background: "radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, rgba(236, 72, 153, 0.4) 20%, transparent 60%)",
+          opacity: 0.15,
           x: cursorX,
           y: cursorY,
           translateX: "-50%",
@@ -70,17 +82,17 @@ const SplashCursor = () => {
         }}
         transition={{
           type: "spring",
-          stiffness: 300,
-          damping: 20
+          stiffness: 200,
+          damping: 25
         }}
       />
       
       {/* Small focused cursor dot */}
       <motion.div
-        className="fixed w-5 h-5 rounded-full pointer-events-none"
+        className="fixed w-3 h-3 rounded-full pointer-events-none"
         style={{
           background: "linear-gradient(45deg, rgb(139, 92, 246), rgb(236, 72, 153))",
-          boxShadow: "0 0 10px rgba(139, 92, 246, 0.7)",
+          boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)",
           x: cursorX,
           y: cursorY,
           translateX: "-50%",
@@ -91,7 +103,7 @@ const SplashCursor = () => {
         }}
       />
       
-      {/* Click splash effects */}
+      {/* Simplified click splash effects */}
       {splashes.map(splash => (
         <motion.div
           key={splash.id}
@@ -101,16 +113,16 @@ const SplashCursor = () => {
             top: splash.y,
             translateX: "-50%",
             translateY: "-50%",
-            background: "linear-gradient(45deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.4))"
+            background: "linear-gradient(45deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3))"
           }}
-          initial={{ width: 0, height: 0, opacity: 0.7 }}
+          initial={{ width: 0, height: 0, opacity: 0.5 }}
           animate={{ 
-            width: 300,
-            height: 300,
+            width: 150,
+            height: 150,
             opacity: 0 
           }}
           transition={{
-            duration: 0.8,
+            duration: 0.6,
             ease: "easeOut"
           }}
         />

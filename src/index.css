@@ -18,9 +18,11 @@
 
     --primary: 262 83% 58%;
     --primary-foreground: 260 20% 98%;
+    --primary-rgb: 139, 92, 246;
 
     --secondary: 215 70% 55%;
     --secondary-foreground: 260 20% 98%;
+    --secondary-rgb: 59, 130, 246;
 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -42,30 +44,32 @@
     --background: 240 10% 3.9%;
     --foreground: 260 20% 98%;
 
-    --card: 240 10% 3.9%;
+    --card: 240 10% 9%;
     --card-foreground: 260 20% 98%;
 
     --popover: 240 10% 3.9%;
     --popover-foreground: 260 20% 98%;
 
-    --primary: 262 83% 58%;
+    --primary: 262 83% 68%;
     --primary-foreground: 260 20% 98%;
+    --primary-rgb: 159, 122, 255;
 
-    --secondary: 215 70% 55%;
+    --secondary: 215 70% 65%;
     --secondary-foreground: 260 20% 98%;
+    --secondary-rgb: 99, 160, 255;
 
     --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted-foreground: 240 5% 74.9%;
 
-    --accent: 175 70% 41%;
-    --accent-foreground: 260 20% 98%;
+    --accent: 175 70% 51%;
+    --accent-foreground: 240 5.9% 10%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 260 20% 98%;
 
-    --border: 240 3.7% 15.9%;
+    --border: 240 3.7% 18%;
     --input: 240 3.7% 15.9%;
-    --ring: 262 83% 58%;
+    --ring: 262 83% 68%;
   }
 }
 
@@ -77,6 +81,14 @@
   html {
     @apply scroll-smooth;
     overflow-x: hidden;
+    /* Improve scroll performance */
+    scroll-behavior: auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
@@ -84,6 +96,8 @@
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
     overflow-x: hidden;
     position: relative;
+    /* Improve scroll performance */
+    will-change: auto;
   }
   
   ::selection {
@@ -91,7 +105,7 @@
   }
 
   .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent animate-gradient bg-300%;
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent bg-300%;
   }
   
   .glass {
@@ -130,11 +144,11 @@
 
   .gradient-border {
     @apply relative rounded-xl p-px overflow-hidden;
-    background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
+    background: linear-gradient(to right, rgba(var(--primary-rgb), 1), rgba(var(--secondary-rgb), 1), rgba(var(--accent-rgb), 1));
   }
   
   .text-glow {
-    text-shadow: 0 0 15px rgba(var(--primary), 0.7);
+    text-shadow: 0 0 15px rgba(var(--primary-rgb), 0.7);
   }
 }
 
@@ -165,4 +179,15 @@
   .text-shadow-glow {
     text-shadow: 0 0 10px currentColor;
   }
+
+  /* Performance optimizations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Remove the projects section */
+#projects {
+  display: none;
 }
