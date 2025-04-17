@@ -1,40 +1,9 @@
 
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Briefcase, Calendar, MapPin, Building, Clock } from "lucide-react";
-
-const experiences = [
-  {
-    title: "Software Development Engineer 1",
-    company: "HyScaler",
-    duration: "Apr 2025 - present",
-    location: "Bhubaneswar, Odisha, India · On-site",
-    type: "Full-time",
-    description: "Working on React Native, and developing multiple web and mobile/Web applications.",
-    skills: ["Django REST Framework", "React Native", "Swift"],
-    logo: "/path_to_logo_image"
-  },
-  {
-    title: "Junior Software Developer",
-    company: "HyScaler",
-    duration: "Apr 2024 - Apr2024",
-    location: "Bhubaneswar, Odisha, India · On-site",
-    type: "Full-time",
-    description: "Working on Django REST Framework, React Native, and developing multiple web and mobile applications.",
-    skills: ["Django REST Framework", "React Native", "+5 skills"],
-    logo: "/path_to_logo_image"
-  },
-  {
-    title: "Apprentice Trainee",
-    company: "HyScaler",
-    duration: "Aug 2023 - Mar 2024 (8 mos)",
-    location: "Bhubaneswar, Odisha, India · On-site",
-    type: "Trainee",
-    description: "Gaining hands-on experience in React.js, React Native, and other web technologies.",
-    skills: ["React.js", "React Native", "+4 skills"],
-    logo: "/path_to_logo_image"
-  }
-];
+import { experiences } from "@/data/experience";
+import TextPressure from "./TextPressure";
 
 export function ExperienceSection() {
   const containerRef = useRef(null);
@@ -92,11 +61,15 @@ export function ExperienceSection() {
           transition={{ duration: 0.8 }}
           className="mb-16 text-center"
         >
-          <h2 className="section-heading">Work Experience</h2>
+          <TextPressure>
+            <h2 className="section-heading">Work Experience</h2>
+          </TextPressure>
           <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            My professional journey in software development:
-          </p>
+          <TextPressure>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              My professional journey in software development:
+            </p>
+          </TextPressure>
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
@@ -153,32 +126,44 @@ export function ExperienceSection() {
                   
                   <div className="flex justify-between items-start flex-wrap gap-4 mb-5">
                     <div>
-                      <h3 className="font-display text-xl font-bold">{experience.title}</h3>
+                      <TextPressure>
+                        <h3 className="font-display text-xl font-bold">{experience.title}</h3>
+                      </TextPressure>
                       <div className="flex items-center gap-2 text-primary font-medium mt-1">
                         <Building className="h-4 w-4" />
-                        <h4>{experience.company}</h4>
+                        <TextPressure>
+                          <h4>{experience.company}</h4>
+                        </TextPressure>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 text-sm text-muted-foreground bg-muted/80 px-4 py-1.5 rounded-full backdrop-blur-sm">
                       <Calendar className="h-3.5 w-3.5" />
-                      <span>{experience.duration}</span>
+                      <TextPressure>
+                        <span>{experience.duration}</span>
+                      </TextPressure>
                     </div>
                   </div>
                   
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <span>{experience.location}</span>
+                      <TextPressure>
+                        <span>{experience.location}</span>
+                      </TextPressure>
                     </div>
                     
                     <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
                       <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <span>{experience.type}</span>
+                      <TextPressure>
+                        <span>{experience.type}</span>
+                      </TextPressure>
                     </div>
                   </div>
                   
                   <p className="text-muted-foreground my-4 border-l-2 border-primary/30 pl-4 italic">
-                    {experience.description}
+                    <TextPressure>
+                      {experience.description}
+                    </TextPressure>
                   </p>
                   
                   <div className="flex flex-wrap gap-2 mt-6">
@@ -194,7 +179,7 @@ export function ExperienceSection() {
                           scale: 1.05
                         }}
                       >
-                        {skill}
+                        <TextPressure>{skill}</TextPressure>
                       </motion.span>
                     ))}
                   </div>

@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Mail, MapPin } from "lucide-react";
+import TextPressure from "./TextPressure";
 
 export function AboutSection() {
   const container = {
@@ -28,7 +29,9 @@ export function AboutSection() {
           viewport={{ once: true, margin: "-100px" }}
           className="mb-12 text-center"
         >
-          <h2 className="section-heading">About Me</h2>
+          <TextPressure>
+            <h2 className="section-heading">About Me</h2>
+          </TextPressure>
           <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
         </motion.div>
 
@@ -43,9 +46,8 @@ export function AboutSection() {
           >
             <div className="gradient-border h-[400px] w-full overflow-hidden rounded-xl">
               <div className="bg-background h-full w-full rounded-xl flex items-center justify-center">
-                <div className="text-6xl font-display font-bold gradient-text">SR</div>
+                <TextPressure className="text-6xl font-display font-bold gradient-text">SR</TextPressure>
                 {/* You can replace the div above with an actual image when available */}
-                {/* <img src="/path/to/profile-image.jpg" alt="Saswat Ranjan" className="h-full w-full object-cover" /> */}
               </div>
             </div>
             
@@ -60,9 +62,11 @@ export function AboutSection() {
                 <div className="bg-primary/20 p-2 rounded-full">
                   <Mail className="h-5 w-5 text-primary" />
                 </div>
-                <a href="mailto:contact@saswatmohanty.com" className="text-sm hover:text-primary transition-colors">
-                  contact@saswatmohanty.com
-                </a>
+                <TextPressure>
+                  <a href="mailto:contact@saswatmohanty.com" className="text-sm hover:text-primary transition-colors">
+                    contact@saswatmohanty.com
+                  </a>
+                </TextPressure>
               </div>
             </motion.div>
             
@@ -77,7 +81,9 @@ export function AboutSection() {
                 <div className="bg-primary/20 p-2 rounded-full">
                   <MapPin className="h-5 w-5 text-primary" />
                 </div>
-                <span className="text-sm">Bhubaneswar, Odisha, India</span>
+                <TextPressure>
+                  <span className="text-sm">Bhubaneswar, Odisha, India</span>
+                </TextPressure>
               </div>
             </motion.div>
           </motion.div>
@@ -90,22 +96,32 @@ export function AboutSection() {
             viewport={{ once: true, margin: "-100px" }}
           >
             <motion.h3 variants={item} className="font-display text-2xl font-bold mb-4">
-              Software Development Engineer I (SDE 1) at HyScaler
+              <TextPressure>
+                Software Development Engineer I (SDE 1) at HyScaler
+              </TextPressure>
             </motion.h3>
             
             <motion.p variants={item} className="text-muted-foreground mb-6">
-              I'm a Software Development Engineer (SDE 1) at HyScaler, specializing in React, React Native, and Node.js. 
-              With a Master's in Computer Applications, I focus on building responsive UIs and backend solutions. I'm passionate 
-              about continuous learning and keeping up with industry trends.
+              <TextPressure>
+                I'm a Software Development Engineer (SDE 1) at HyScaler, specializing in React, React Native, and Node.js. 
+                With a Master's in Computer Applications, I focus on building responsive UIs and backend solutions. I'm passionate 
+                about continuous learning and keeping up with industry trends.
+              </TextPressure>
             </motion.p>
             
             <div className="mb-6">
-              <motion.h4 variants={item} className="font-bold mb-2">Education</motion.h4>
+              <motion.h4 variants={item} className="font-bold mb-2">
+                <TextPressure>Education</TextPressure>
+              </motion.h4>
               <motion.div variants={item} className="pl-4 border-l-2 border-primary mb-2">
-                <p className="font-medium">MCA from United School of Business Management, Bhubaneswar</p>
+                <TextPressure>
+                  <p className="font-medium">MCA from United School of Business Management, Bhubaneswar</p>
+                </TextPressure>
               </motion.div>
               <motion.div variants={item} className="pl-4 border-l-2 border-primary">
-                <p className="font-medium">BSc from Utkal University</p>
+                <TextPressure>
+                  <p className="font-medium">BSc from Utkal University</p>
+                </TextPressure>
               </motion.div>
             </div>
             
@@ -116,7 +132,9 @@ export function AboutSection() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                My Experience
+                <TextPressure>
+                  My Experience
+                </TextPressure>
               </motion.a>
               <motion.a
                 href="#skills"
@@ -124,7 +142,9 @@ export function AboutSection() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                My Skills
+                <TextPressure>
+                  My Skills
+                </TextPressure>
               </motion.a>
             </motion.div>
           </motion.div>

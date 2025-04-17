@@ -1,4 +1,3 @@
-
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
@@ -12,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import SplashCursor from "@/components/SplashCursor";
+import StarryBackground from "@/components/StarryBackground";
 
 const Index = () => {
   const { scrollYProgress } = useScroll();
@@ -46,13 +46,14 @@ const Index = () => {
   return (
     <div className="relative">
       <SplashCursor />
+      <StarryBackground />
       
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-primary z-50"
         style={{ scaleX }}
       />
       
-      {/* Add 3D perspective wrapper */}
+      {/* 3D perspective wrapper */}
       <div className="perspective-[1000px]">
         <Navbar />
         <HeroSection />

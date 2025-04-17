@@ -1,98 +1,120 @@
 
 import { motion, useMotionValue } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const SplashCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [clicked, setClicked] = useState(false);
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const [isClicking, setIsClicking] = useState(false);
+  const [splashes, setSplashes] = useState<Array<{ id: number, x: number, y: number }>>([]);
   
-  // Glowing light that follows cursor with gradient
-  const glowX = useMotionValue(0);
-  const glowY = useMotionValue(0);
+  // Glowing cursor light
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
   
+  // Handle mouse movements and clicks
   useEffect(() => {
+    let splashCounter = 0;
+    
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
-      glowX.set(e.clientX);
-      glowY.set(e.clientY);
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
     };
     
-    const handleClick = (e: MouseEvent) => {
-      setClicked(true);
+    const handleMouseDown = (e: MouseEvent) => {
+      setIsClicking(true);
+      const newSplash = {
+        id: splashCounter++,
+        x: e.clientX,
+        y: e.clientY
+      };
       
-      // Create multiple splash particles with gradient
-      for (let i = 0; i < 5; i++) {
-        const splash = document.createElement('div');
-        splash.className = 'fixed pointer-events-none rounded-full mix-blend-screen';
-        splash.style.left = `${e.clientX}px`;
-        splash.style.top = `${e.clientY}px`;
-        splash.style.background = `linear-gradient(45deg, rgb(139, 92, 246, ${0.3 - i * 0.05}), rgb(236, 72, 153, ${0.3 - i * 0.05}))`;
-        splash.style.transform = 'translate(-50%, -50%)';
-        document.body.appendChild(splash);
-        
-        setTimeout(() => {
-          splash.style.transition = `all ${800 + i * 100}ms cubic-bezier(0.1, 0.8, 0.3, 1)`;
-          splash.style.width = `${300 + i * 50}px`;
-          splash.style.height = `${300 + i * 50}px`;
-          splash.style.opacity = '0';
-        }, 10);
-        
-        setTimeout(() => {
-          document.body.removeChild(splash);
-        }, 1000 + i * 100);
-      }
+      setSplashes(prev => [...prev, newSplash]);
       
-      setTimeout(() => setClicked(false), 500);
+      // Remove splash after animation completes
+      setTimeout(() => {
+        setSplashes(prev => prev.filter(splash => splash.id !== newSplash.id));
+      }, 1000);
+    };
+    
+    const handleMouseUp = () => {
+      setIsClicking(false);
     };
     
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("click", handleClick);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
     
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
   
   return (
     <div className="fixed pointer-events-none inset-0 z-50">
-      {/* Gradient glowing light effect */}
+      {/* Main cursor glow effect */}
       <motion.div
-        className="fixed w-[150px] h-[150px] rounded-full mix-blend-screen pointer-events-none"
+        className="fixed w-[180px] h-[180px] rounded-full mix-blend-screen pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgb(139, 92, 246) 0%, rgb(236, 72, 153) 40%, transparent 70%)",
-          opacity: 0.15,
-          x: glowX,
-          y: glowY,
+          background: "radial-gradient(circle, rgba(139, 92, 246, 0.8) 0%, rgba(236, 72, 153, 0.6) 30%, transparent 70%)",
+          opacity: 0.2,
+          x: cursorX,
+          y: cursorY,
           translateX: "-50%",
           translateY: "-50%"
         }}
+        animate={{
+          scale: isClicking ? 0.8 : 1,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 20
+        }}
       />
       
-      {clicked && (
+      {/* Small focused cursor dot */}
+      <motion.div
+        className="fixed w-5 h-5 rounded-full pointer-events-none"
+        style={{
+          background: "linear-gradient(45deg, rgb(139, 92, 246), rgb(236, 72, 153))",
+          boxShadow: "0 0 10px rgba(139, 92, 246, 0.7)",
+          x: cursorX,
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%"
+        }}
+        animate={{
+          scale: isClicking ? 0.6 : 1,
+        }}
+      />
+      
+      {/* Click splash effects */}
+      {splashes.map(splash => (
         <motion.div
-          className="fixed top-0 left-0 rounded-full mix-blend-screen"
+          key={splash.id}
+          className="fixed rounded-full mix-blend-screen pointer-events-none"
           style={{
-            background: "linear-gradient(45deg, rgb(139, 92, 246, 0.3), rgb(236, 72, 153, 0.3))"
+            left: splash.x,
+            top: splash.y,
+            translateX: "-50%",
+            translateY: "-50%",
+            background: "linear-gradient(45deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.4))"
           }}
-          initial={{ 
-            x: position.x,
-            y: position.y,
-            scale: 0, 
-            opacity: 1,
-            translateX: '-50%',
-            translateY: '-50%'
-          }}
+          initial={{ width: 0, height: 0, opacity: 0.7 }}
           animate={{ 
-            scale: 4, 
-            opacity: 0,
+            width: 300,
+            height: 300,
+            opacity: 0 
           }}
           transition={{
-            duration: 0.6,
+            duration: 0.8,
+            ease: "easeOut"
           }}
         />
-      )}
+      ))}
     </div>
   );
 };

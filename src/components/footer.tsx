@@ -1,40 +1,11 @@
 
 import { motion } from "framer-motion";
-import { ChevronRight, Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { socialLinks, quickLinks } from "@/data/social-links";
+import TextPressure from "./TextPressure";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  
-  const socialLinks = [
-    {
-      href: "#",
-      icon: Github,
-      name: "GitHub"
-    },
-    {
-      href: "#",
-      icon: Linkedin,
-      name: "LinkedIn"
-    },
-    {
-      href: "#",
-      icon: Twitter,
-      name: "Twitter"
-    },
-    {
-      href: "mailto:contact@saswatmohanty.com",
-      icon: Mail,
-      name: "Email"
-    }
-  ];
-  
-  const quickLinks = [
-    { label: "About", href: "#about" },
-    { label: "Experience", href: "#experience" },
-    { label: "Skills", href: "#skills" },
-    { label: "Projects", href: "#projects" },
-    { label: "Contact", href: "#contact" }
-  ];
 
   return (
     <footer className="bg-muted/50 py-12 border-t border-border">
@@ -49,7 +20,7 @@ export function Footer() {
               transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
-              Saswat.dev
+              <TextPressure>Saswat.dev</TextPressure>
             </motion.h3>
             <motion.p
               className="text-muted-foreground text-sm mb-4"
@@ -58,7 +29,9 @@ export function Footer() {
               transition={{ duration: 0.3, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              Junior Software Developer specialized in React, React Native, and Node.js development. Based in Bhubaneswar, Odisha, India.
+              <TextPressure>
+                Junior Software Developer specialized in React, React Native, and Node.js development. Based in Bhubaneswar, Odisha, India.
+              </TextPressure>
             </motion.p>
             
             <div className="flex gap-3">
@@ -89,7 +62,7 @@ export function Footer() {
               transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
-              Quick Links
+              <TextPressure>Quick Links</TextPressure>
             </motion.h3>
             <ul className="space-y-2">
               {quickLinks.map((link, index) => (
@@ -105,7 +78,7 @@ export function Footer() {
                     className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 text-sm"
                   >
                     <ChevronRight className="h-3 w-3" />
-                    {link.label}
+                    <TextPressure>{link.label}</TextPressure>
                   </a>
                 </motion.li>
               ))}
@@ -121,7 +94,7 @@ export function Footer() {
               transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
-              Contact
+              <TextPressure>Contact</TextPressure>
             </motion.h3>
             <motion.div
               className="space-y-2 text-sm text-muted-foreground"
@@ -130,9 +103,9 @@ export function Footer() {
               transition={{ duration: 0.3, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <p>Bhubaneswar, Odisha, India</p>
-              <p>contact@saswatmohanty.com</p>
-              <p>+91 98765 43210</p>
+              <p><TextPressure>Bhubaneswar, Odisha, India</TextPressure></p>
+              <p><TextPressure>contact@saswatmohanty.com</TextPressure></p>
+              <p><TextPressure>+91 98765 43210</TextPressure></p>
             </motion.div>
           </div>
           
@@ -145,7 +118,7 @@ export function Footer() {
               transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
-              Subscribe
+              <TextPressure>Subscribe</TextPressure>
             </motion.h3>
             <motion.p
               className="text-muted-foreground text-sm mb-4"
@@ -154,7 +127,9 @@ export function Footer() {
               transition={{ duration: 0.3, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              Subscribe to my newsletter to get updates on my latest projects and tech articles.
+              <TextPressure>
+                Subscribe to my newsletter to get updates on my latest projects and tech articles.
+              </TextPressure>
             </motion.p>
             <motion.div
               className="flex"
@@ -169,7 +144,7 @@ export function Footer() {
                 className="flex-1 px-4 py-2 rounded-l-lg bg-background border border-border focus:outline-none"
               />
               <button className="bg-primary text-white px-4 py-2 rounded-r-lg hover:bg-primary/90 transition-colors">
-                Subscribe
+                <TextPressure>Subscribe</TextPressure>
               </button>
             </motion.div>
           </div>
@@ -183,7 +158,9 @@ export function Footer() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            © {currentYear} Saswat Ranjan Mohanty. All rights reserved.
+            <TextPressure>
+              © {currentYear} Saswat Ranjan Mohanty. All rights reserved.
+            </TextPressure>
           </motion.p>
           
           <motion.div
@@ -193,8 +170,12 @@ export function Footer() {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+            <TextPressure>
+              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+            </TextPressure>
+            <TextPressure>
+              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+            </TextPressure>
           </motion.div>
         </div>
       </div>

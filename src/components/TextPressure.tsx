@@ -10,7 +10,7 @@ interface TextPressureProps {
 const TextPressure = ({ children, className = "" }: TextPressureProps) => {
   return (
     <motion.span
-      className={`inline-block cursor-pointer ${className}`}
+      className={`inline-block cursor-pointer relative ${className}`}
       whileHover={{ 
         scale: 1.05,
         color: "rgb(139, 92, 246)",
@@ -20,6 +20,12 @@ const TextPressure = ({ children, className = "" }: TextPressureProps) => {
       transition={{ type: "spring", stiffness: 500, damping: 30 }}
     >
       {children}
+      <motion.span 
+        className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
+        initial={{ scaleX: 0, opacity: 0 }}
+        whileHover={{ scaleX: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      />
     </motion.span>
   );
 };
