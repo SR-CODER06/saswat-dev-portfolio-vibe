@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import TextPressure from "./TextPressure";
 
 export function ContactSection() {
   const [formState, setFormState] = useState({
@@ -52,11 +53,15 @@ export function ContactSection() {
           viewport={{ once: true, margin: "-100px" }}
           className="mb-12 text-center"
         >
-          <h2 className="section-heading">Get In Touch</h2>
+          <TextPressure>
+            <h2 className="section-heading">Get In Touch</h2>
+          </TextPressure>
           <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Feel free to contact with me. Let's Talk. Don't wish for it! Work for it!
-          </p>
+          <TextPressure>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Feel free to contact with me. Let's Talk. Don't wish for it! Work for it!
+            </p>
+          </TextPressure>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -68,13 +73,17 @@ export function ContactSection() {
             viewport={{ once: true, margin: "-100px" }}
           >
             <div className="bg-card p-6 rounded-xl shadow-sm">
-              <h3 className="font-display text-xl font-bold mb-6">Send me a message</h3>
+              <TextPressure>
+                <h3 className="font-display text-xl font-bold mb-6">Send me a message</h3>
+              </TextPressure>
               
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label htmlFor="name" className="block text-sm font-medium mb-1">
-                    Your Name
-                  </label>
+                  <TextPressure>
+                    <label htmlFor="name" className="block text-sm font-medium mb-1">
+                      Your Name
+                    </label>
+                  </TextPressure>
                   <motion.input
                     whileFocus={{ scale: 1.01 }}
                     transition={{ duration: 0.2 }}
@@ -90,9 +99,11 @@ export function ContactSection() {
                 </div>
                 
                 <div className="mb-4">
-                  <label htmlFor="email" className="block text-sm font-medium mb-1">
-                    Email Address
-                  </label>
+                  <TextPressure>
+                    <label htmlFor="email" className="block text-sm font-medium mb-1">
+                      Email Address
+                    </label>
+                  </TextPressure>
                   <motion.input
                     whileFocus={{ scale: 1.01 }}
                     transition={{ duration: 0.2 }}
@@ -108,9 +119,11 @@ export function ContactSection() {
                 </div>
                 
                 <div className="mb-6">
-                  <label htmlFor="message" className="block text-sm font-medium mb-1">
-                    Message
-                  </label>
+                  <TextPressure>
+                    <label htmlFor="message" className="block text-sm font-medium mb-1">
+                      Message
+                    </label>
+                  </TextPressure>
                   <motion.textarea
                     whileFocus={{ scale: 1.01 }}
                     transition={{ duration: 0.2 }}
@@ -132,7 +145,9 @@ export function ContactSection() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  <TextPressure>
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </TextPressure>
                   <Send className="h-4 w-4" />
                 </motion.button>
               </form>
@@ -148,10 +163,14 @@ export function ContactSection() {
           >
             <div className="h-full flex flex-col">
               <div className="bg-gradient-to-br from-primary via-secondary to-accent p-6 rounded-xl text-white mb-6">
-                <h3 className="font-display text-xl font-bold mb-6">Contact Information</h3>
-                <p className="mb-6">
-                  I'm open for freelance opportunities and full-time positions. Feel free to reach out if you have a project in mind or want to work together!
-                </p>
+                <TextPressure>
+                  <h3 className="font-display text-xl font-bold mb-6">Contact Information</h3>
+                </TextPressure>
+                <TextPressure>
+                  <p className="mb-6">
+                    I'm open for freelance opportunities and full-time positions. Feel free to reach out if you have a project in mind or want to work together!
+                  </p>
+                </TextPressure>
                 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -159,10 +178,14 @@ export function ContactSection() {
                       <Mail className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/70">Email</p>
-                      <a href="mailto:contact@saswatmohanty.com" className="hover:underline">
-                        contact@saswatmohanty.com
-                      </a>
+                      <TextPressure>
+                        <p className="text-sm text-white/70">Email</p>
+                      </TextPressure>
+                      <TextPressure>
+                        <a href="mailto:contact@saswatmohanty.com" className="hover:underline">
+                          contact@saswatmohanty.com
+                        </a>
+                      </TextPressure>
                     </div>
                   </div>
                   
@@ -171,8 +194,12 @@ export function ContactSection() {
                       <MapPin className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/70">Location</p>
-                      <p>Bhubaneswar, Odisha, India</p>
+                      <TextPressure>
+                        <p className="text-sm text-white/70">Location</p>
+                      </TextPressure>
+                      <TextPressure>
+                        <p>Bhubaneswar, Odisha, India</p>
+                      </TextPressure>
                     </div>
                   </div>
                   
@@ -181,8 +208,12 @@ export function ContactSection() {
                       <Phone className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/70">Phone</p>
-                      <p>+91 98765 43210</p>
+                      <TextPressure>
+                        <p className="text-sm text-white/70">Phone</p>
+                      </TextPressure>
+                      <TextPressure>
+                        <p>+91 98765 43210</p>
+                      </TextPressure>
                     </div>
                   </div>
                 </div>
@@ -196,7 +227,9 @@ export function ContactSection() {
                 viewport={{ once: true }}
               >
                 <div className="text-center">
-                  <h4 className="font-display text-lg font-bold mb-2">Let's Connect</h4>
+                  <TextPressure>
+                    <h4 className="font-display text-lg font-bold mb-2">Let's Connect</h4>
+                  </TextPressure>
                   <div className="flex justify-center gap-4 mt-4">
                     {[1, 2, 3, 4].map((_, index) => (
                       <motion.a
@@ -208,7 +241,7 @@ export function ContactSection() {
                       >
                         <span className="sr-only">Social Media {index + 1}</span>
                         {/* Add social icons here when available */}
-                        {index + 1}
+                        <TextPressure>{index + 1}</TextPressure>
                       </motion.a>
                     ))}
                   </div>
