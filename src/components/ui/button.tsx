@@ -41,15 +41,13 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-// Create a type that combines button props with motion props, but properly handles the conflict
-type MotionButtonProps = Omit<HTMLMotionProps<"button">, keyof ButtonProps> & ButtonProps;
-
-const Button = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
+// Modified approach: instead of combining types directly, we'll handle the motion props separately
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : motion.button
     
-    // Define motion props separately to avoid type conflicts
-    const motionProps = {
+    // Motion animation configuration
+    const motionConfig = {
       whileHover: { scale: 1.02 },
       whileTap: { scale: 0.98 },
       transition: { type: "spring", stiffness: 300, damping: 10 }
@@ -59,7 +57,8 @@ const Button = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        {...motionProps}
+        // Apply motion props in a way that TypeScript can handle
+        {...(asChild ? {} : motionConfig)}
         {...props}
       />
     )
