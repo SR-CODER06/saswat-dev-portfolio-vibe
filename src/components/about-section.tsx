@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Mail, MapPin } from "lucide-react";
 import TextPressure from "./TextPressure";
@@ -25,37 +24,35 @@ export function AboutSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
           viewport={{ once: true, margin: "-100px" }}
           className="mb-12 text-center"
         >
           <TextPressure>
             <h2 className="section-heading">About Me</h2>
           </TextPressure>
-          <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
+          <div className="w-20 h-1 bg-primary/50 mx-auto mb-6"></div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* About Image */}
           <motion.div 
             className="relative"
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
           >
-            <div className="gradient-border h-[400px] w-full overflow-hidden rounded-xl">
-              <div className="bg-background h-full w-full rounded-xl flex items-center justify-center">
+            <div className="gradient-border h-[400px] w-full overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]">
+              <div className="bg-background h-full w-full rounded-xl flex items-center justify-center hover:bg-primary/5 transition-colors">
                 <TextPressure className="text-6xl font-display font-bold gradient-text">SR</TextPressure>
-                {/* You can replace the div above with an actual image when available */}
               </div>
             </div>
             
             <motion.div 
-              className="absolute -bottom-6 -right-6 bg-background glass p-4 rounded-xl shadow-lg"
+              className="absolute -bottom-6 -right-6 bg-background/80 glass p-4 rounded-xl shadow-lg hover:bg-background/90 transition-colors"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
               viewport={{ once: true }}
             >
               <div className="flex items-center gap-3">
@@ -71,10 +68,10 @@ export function AboutSection() {
             </motion.div>
             
             <motion.div 
-              className="absolute -top-6 -left-6 bg-background glass p-4 rounded-xl shadow-lg"
+              className="absolute -top-6 -left-6 bg-background/80 glass p-4 rounded-xl shadow-lg hover:bg-background/90 transition-colors"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
               viewport={{ once: true }}
             >
               <div className="flex items-center gap-3">
@@ -88,7 +85,6 @@ export function AboutSection() {
             </motion.div>
           </motion.div>
 
-          {/* About Content */}
           <motion.div
             variants={container}
             initial="hidden"
