@@ -41,7 +41,7 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-// Create a separate regular button without motion effects
+// Regular button without motion effects
 const RegularButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
@@ -56,14 +56,14 @@ const RegularButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 RegularButton.displayName = "RegularButton"
 
-// Define a separate interface for the motion button that extends ButtonProps
-interface MotionButtonProps extends Omit<ButtonProps, 'asChild'> {}
-
-// Create a motion button component with proper type handling
-const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
+// Motion button with animations
+const MotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
+    // Create a properly typed motion component
+    const MotionComp = motion.button;
+    
     return (
-      <motion.button
+      <MotionComp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         whileHover={{ scale: 1.02 }}
@@ -76,7 +76,6 @@ const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
 )
 MotionButton.displayName = "MotionButton"
 
-// The main Button component that decides which implementation to use
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ asChild = false, ...props }, ref) => {
     if (asChild) {

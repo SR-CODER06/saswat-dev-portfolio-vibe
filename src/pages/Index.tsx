@@ -10,8 +10,8 @@ import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
-import { SplashCursor } from "@/components/SplashCursor";
-import { StarryBackground } from "@/components/StarryBackground";
+import SplashCursor from "@/components/SplashCursor";
+import StarryBackground from "@/components/StarryBackground";
 
 const Index = () => {
   const { scrollYProgress } = useScroll();
