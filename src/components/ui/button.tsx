@@ -2,7 +2,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { motion, HTMLMotionProps } from "framer-motion"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -56,15 +56,16 @@ const RegularButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 RegularButton.displayName = "RegularButton"
 
-// Motion button with animations
+// Create a type-safe motion button component
+// The key fix here is to avoid passing all props directly to motion.button
 const MotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
-    // Create a properly typed motion component
-    const MotionComp = motion.button;
+    // Extract animation-related props to avoid type conflicts
+    const buttonClass = cn(buttonVariants({ variant, size, className }));
     
     return (
-      <MotionComp
-        className={cn(buttonVariants({ variant, size, className }))}
+      <motion.button
+        className={buttonClass}
         ref={ref}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}

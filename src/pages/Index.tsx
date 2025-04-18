@@ -1,17 +1,27 @@
+
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
 import LoadingScreen from "@/components/LoadingScreen";
-import { HeroSection } from "@/components/hero-section";
-import { AboutSection } from "@/components/about-section";
-import { ExperienceSection } from "@/components/experience-section";
-import { SkillsSection } from "@/components/skills-section";
-import { ContactSection } from "@/components/contact-section";
-import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import SplashCursor from "@/components/SplashCursor";
 import StarryBackground from "@/components/StarryBackground";
+
+// Lazy load sections for better performance
+const HeroSection = lazy(() => import("@/components/hero-section").then(module => ({ default: module.HeroSection })));
+const AboutSection = lazy(() => import("@/components/about-section").then(module => ({ default: module.AboutSection })));
+const ExperienceSection = lazy(() => import("@/components/experience-section").then(module => ({ default: module.ExperienceSection })));
+const SkillsSection = lazy(() => import("@/components/skills-section").then(module => ({ default: module.SkillsSection })));
+const ContactSection = lazy(() => import("@/components/contact-section").then(module => ({ default: module.ContactSection })));
+const Footer = lazy(() => import("@/components/footer").then(module => ({ default: module.Footer })));
+
+// Section loading placeholder
+const SectionPlaceholder = () => (
+  <div className="w-full h-[50vh] flex items-center justify-center">
+    <div className="animate-pulse w-12 h-12 rounded-full bg-primary/30" />
+  </div>
+);
 
 const Index = () => {
   const { scrollYProgress } = useScroll();
@@ -24,45 +34,41 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [scrollThrottleTimer, setScrollThrottleTimer] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Use a more performant approach for scroll handling
   useEffect(() => {
     setIsMounted(true);
     setIsDesktop(window.innerWidth > 768);
 
+    let scrollTimeout: number;
     const handleScroll = () => {
-      if (scrollThrottleTimer === null) {
-        const newTimer = window.setTimeout(() => {
-          setShowScrollTop(window.scrollY > 500);
-          setScrollThrottleTimer(null);
-        }, 200);
-
-        setScrollThrottleTimer(newTimer);
-      }
+      if (scrollTimeout) return;
+      
+      scrollTimeout = window.setTimeout(() => {
+        setShowScrollTop(window.scrollY > 500);
+        scrollTimeout = 0;
+      }, 100);
     };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 768);
     };
 
+    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
+    
+    // Load sections progressively with a slight delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
-      if (scrollThrottleTimer) window.clearTimeout(scrollThrottleTimer);
+      clearTimeout(timer);
+      if (scrollTimeout) window.clearTimeout(scrollTimeout);
     };
-  }, [scrollThrottleTimer]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
   }, []);
 
   const scrollToTop = () => {
@@ -88,20 +94,37 @@ const Index = () => {
       
       <div>
         <Navbar />
-        <HeroSection />
-        <div className="content-visibility-auto">
-          <AboutSection />
-        </div>
-        <div className="content-visibility-auto">
-          <ExperienceSection />
-        </div>
-        <div className="content-visibility-auto">
-          <SkillsSection />
-        </div>
-        <div className="content-visibility-auto">
-          <ContactSection />
-        </div>
-        <Footer />
+        <Suspense fallback={<SectionPlaceholder />}>
+          <HeroSection />
+        </Suspense>
+        
+        <Suspense fallback={<SectionPlaceholder />}>
+          <div className="content-visibility-auto">
+            <AboutSection />
+          </div>
+        </Suspense>
+        
+        <Suspense fallback={<SectionPlaceholder />}>
+          <div className="content-visibility-auto">
+            <ExperienceSection />
+          </div>
+        </Suspense>
+        
+        <Suspense fallback={<SectionPlaceholder />}>
+          <div className="content-visibility-auto">
+            <SkillsSection />
+          </div>
+        </Suspense>
+        
+        <Suspense fallback={<SectionPlaceholder />}>
+          <div className="content-visibility-auto">
+            <ContactSection />
+          </div>
+        </Suspense>
+        
+        <Suspense fallback={<div className="h-20" />}>
+          <Footer />
+        </Suspense>
       </div>
       
       <AnimatedScrollTopButton show={showScrollTop} onClick={scrollToTop} />
