@@ -2,7 +2,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { motion, type HTMLMotionProps } from "framer-motion"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -41,27 +41,45 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-// Modified approach: instead of combining types directly, we'll handle the motion props separately
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+// Create a separate regular button without motion effects
+const RegularButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : motion.button
-    
-    // Motion animation configuration
-    const motionConfig = {
-      whileHover: { scale: 1.02 },
-      whileTap: { scale: 0.98 },
-      transition: { type: "spring", stiffness: 300, damping: 10 }
-    };
-    
+    const Comp = asChild ? Slot : "button"
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        // Apply motion props in a way that TypeScript can handle
-        {...(asChild ? {} : motionConfig)}
         {...props}
       />
     )
+  }
+)
+RegularButton.displayName = "RegularButton"
+
+// Create a motion button component
+const MotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <motion.button
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 300, damping: 10 }}
+        {...props}
+      />
+    )
+  }
+)
+MotionButton.displayName = "MotionButton"
+
+// The main Button component that decides which implementation to use
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ asChild = false, ...props }, ref) => {
+    if (asChild) {
+      return <RegularButton asChild {...props} ref={ref} />
+    }
+    return <MotionButton {...props} ref={ref} />
   }
 )
 Button.displayName = "Button"
