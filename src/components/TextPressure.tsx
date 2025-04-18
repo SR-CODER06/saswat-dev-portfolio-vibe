@@ -44,7 +44,6 @@ const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
       whileHover="hover"
       whileTap="tap"
       // Only apply hover animations to larger screens
-      whileHover={window.innerWidth > 768 ? "hover" : "initial"}
       style={{ 
         willChange: "transform",
         // Use RGB values for colors to avoid HSL animation issues

@@ -1,6 +1,6 @@
 
 import { motion, useMotionValue } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const SplashCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -10,41 +10,45 @@ const SplashCursor = () => {
   // Glowing cursor light
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
+  const throttleTimerRef = useRef<number | null>(null);
+  const splashCounterRef = useRef(0);
+  const splashTimeoutRef = useRef<number | null>(null);
   
-  // Handle mouse movements and clicks with optimizations
+  // Handle mouse movements and clicks with extreme optimizations
   useEffect(() => {
-    let splashCounter = 0;
-    let throttleTimer: number | null = null;
-    
     const handleMouseMove = (e: MouseEvent) => {
-      // Throttle mouse move updates
-      if (!throttleTimer) {
-        throttleTimer = window.setTimeout(() => {
+      // Extreme throttle for mouse move
+      if (!throttleTimerRef.current) {
+        throttleTimerRef.current = window.setTimeout(() => {
           setPosition({ x: e.clientX, y: e.clientY });
           cursorX.set(e.clientX);
           cursorY.set(e.clientY);
-          throttleTimer = null;
-        }, 20); // 50 fps throttle
+          throttleTimerRef.current = null;
+        }, 40); // 25fps throttle
       }
     };
     
     const handleMouseDown = (e: MouseEvent) => {
       setIsClicking(true);
       
-      // Limit number of active splashes to 3 for performance
-      if (splashes.length < 3) {
+      // Limit to only one splash at a time
+      if (splashes.length < 1) {
         const newSplash = {
-          id: splashCounter++,
+          id: splashCounterRef.current++,
           x: e.clientX,
           y: e.clientY
         };
         
-        setSplashes(prev => [...prev, newSplash]);
+        setSplashes([newSplash]);
+        
+        // Clear previous timeout
+        if (splashTimeoutRef.current) clearTimeout(splashTimeoutRef.current);
         
         // Remove splash after animation completes
-        setTimeout(() => {
-          setSplashes(prev => prev.filter(splash => splash.id !== newSplash.id));
-        }, 800);
+        splashTimeoutRef.current = window.setTimeout(() => {
+          setSplashes([]);
+          splashTimeoutRef.current = null;
+        }, 600);
       }
     };
     
@@ -60,7 +64,8 @@ const SplashCursor = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
-      if (throttleTimer) clearTimeout(throttleTimer);
+      if (throttleTimerRef.current) clearTimeout(throttleTimerRef.current);
+      if (splashTimeoutRef.current) clearTimeout(splashTimeoutRef.current);
     };
   }, [splashes.length]);
   
@@ -68,10 +73,10 @@ const SplashCursor = () => {
     <div className="fixed pointer-events-none inset-0 z-50">
       {/* Main cursor glow effect - reduced size and opacity */}
       <motion.div
-        className="fixed w-[100px] h-[100px] rounded-full mix-blend-screen pointer-events-none"
+        className="fixed w-[60px] h-[60px] rounded-full mix-blend-screen pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, rgba(236, 72, 153, 0.4) 20%, transparent 60%)",
-          opacity: 0.15,
+          background: "radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, rgba(236, 72, 153, 0.3) 20%, transparent 60%)",
+          opacity: 0.12,
           x: cursorX,
           y: cursorY,
           translateX: "-50%",
@@ -82,17 +87,17 @@ const SplashCursor = () => {
         }}
         transition={{
           type: "spring",
-          stiffness: 200,
+          stiffness: 300,
           damping: 25
         }}
       />
       
       {/* Small focused cursor dot */}
       <motion.div
-        className="fixed w-3 h-3 rounded-full pointer-events-none"
+        className="fixed w-2 h-2 rounded-full pointer-events-none"
         style={{
           background: "linear-gradient(45deg, rgb(139, 92, 246), rgb(236, 72, 153))",
-          boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)",
+          boxShadow: "0 0 3px rgba(139, 92, 246, 0.4)",
           x: cursorX,
           y: cursorY,
           translateX: "-50%",
@@ -113,16 +118,16 @@ const SplashCursor = () => {
             top: splash.y,
             translateX: "-50%",
             translateY: "-50%",
-            background: "linear-gradient(45deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3))"
+            background: "linear-gradient(45deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))"
           }}
-          initial={{ width: 0, height: 0, opacity: 0.5 }}
+          initial={{ width: 0, height: 0, opacity: 0.3 }}
           animate={{ 
-            width: 150,
-            height: 150,
+            width: 120,
+            height: 120,
             opacity: 0 
           }}
           transition={{
-            duration: 0.6,
+            duration: 0.5,
             ease: "easeOut"
           }}
         />

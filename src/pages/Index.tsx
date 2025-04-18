@@ -18,48 +18,56 @@ const StarryBackground = lazy(() => import("@/components/StarryBackground"));
 const Index = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 50, // Lower stiffness for smoother animation
-    damping: 20, // Lower damping for smoother animation
-    restDelta: 0.01, // Higher threshold for stopping the animation
+    stiffness: 30, // Much lower stiffness for smoother animation
+    damping: 15,  // Lower damping
+    restDelta: 0.02, // Higher threshold to stop animation sooner
   });
   
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [scrollThrottleTimer, setScrollThrottleTimer] = useState<number | null>(null);
   
   useEffect(() => {
-    setIsMounted(true); // For handling client-side only features
+    setIsMounted(true);
+    setIsDesktop(window.innerWidth > 768);
     
-    // Throttled scroll handler for better performance
-    let timeoutId: number | null = null;
-    
+    // Very throttled scroll handler for better performance
     const handleScroll = () => {
-      if (timeoutId === null) {
-        timeoutId = window.setTimeout(() => {
-          if (window.scrollY > 500) {
-            setShowScrollTop(true);
-          } else {
-            setShowScrollTop(false);
-          }
-          timeoutId = null;
-        }, 100);
+      if (scrollThrottleTimer === null) {
+        const newTimer = window.setTimeout(() => {
+          setShowScrollTop(window.scrollY > 500);
+          setScrollThrottleTimer(null);
+        }, 200); // 200ms throttle
+        
+        setScrollThrottleTimer(newTimer);
       }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Check for window resize to disable cursor on mobile
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+    
+    window.addEventListener("resize", handleResize, { passive: true });
+    
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (timeoutId) window.clearTimeout(timeoutId);
+      window.removeEventListener("resize", handleResize);
+      if (scrollThrottleTimer) window.clearTimeout(scrollThrottleTimer);
     };
-  }, []);
+  }, [scrollThrottleTimer]);
   
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div className="relative">
+    <div className="relative scroll-optimized">
       {/* Only render cursor effect on desktop */}
-      {isMounted && window.innerWidth > 768 && <SplashCursor />}
+      {isMounted && isDesktop && <SplashCursor />}
       
       {/* Lazy load the starry background */}
       <Suspense fallback={null}>
@@ -67,17 +75,25 @@ const Index = () => {
       </Suspense>
       
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-primary z-50"
+        className="fixed top-0 left-0 right-0 h-0.5 bg-primary z-50"
         style={{ scaleX, transformOrigin: "0% 0%" }}
       />
       
       <div>
         <Navbar />
         <HeroSection />
-        <AboutSection />
-        <ExperienceSection />
-        <SkillsSection />
-        <ContactSection />
+        <div className="content-visibility-auto">
+          <AboutSection />
+        </div>
+        <div className="content-visibility-auto">
+          <ExperienceSection />
+        </div>
+        <div className="content-visibility-auto">
+          <SkillsSection />
+        </div>
+        <div className="content-visibility-auto">
+          <ContactSection />
+        </div>
         <Footer />
       </div>
       
@@ -94,7 +110,7 @@ const AnimatedScrollTopButton = ({ show, onClick }: { show: boolean; onClick: ()
       opacity: show ? 1 : 0,
       scale: show ? 1 : 0,
     }}
-    transition={{ duration: 0.3 }}
+    transition={{ duration: 0.2 }}
   >
     <Button
       onClick={onClick}

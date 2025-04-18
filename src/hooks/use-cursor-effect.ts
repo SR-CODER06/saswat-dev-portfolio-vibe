@@ -8,11 +8,11 @@ interface UseCursorEffectOptions {
   fps?: number;
 }
 
-// Highly optimized cursor effect for better performance
+// Ultra-optimized cursor effect for better performance
 export function useCursorEffect({ 
-  intensity = 0.5, // Reduced intensity
-  smoothness = 0.05, // Reduced smoothness 
-  fps = 30 // Lower FPS for better performance
+  intensity = 0.2, // Drastically reduced intensity
+  smoothness = 0.03, // Drastically reduced smoothness
+  fps = 20 // Much lower FPS for better performance
 }: UseCursorEffectOptions = {}) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -62,17 +62,17 @@ export function useCursorEffect({
   return { mouseX, mouseY };
 }
 
-// Use this optimized version for better performance in components
+// Super optimized version for better performance in components
 export function useTransformedCursorEffect(options: UseCursorEffectOptions = {}) {
   const { mouseX, mouseY } = useCursorEffect({
     ...options,
-    intensity: 0.3, // Further reduced for performance
-    fps: 20 // Lower framerate
+    intensity: 0.15, // Further reduced for performance
+    fps: 15 // Even lower framerate
   });
   
   // Further reduce update frequency
-  const transformedX = useTransform(mouseX, (x) => Math.round(x / 2) * 2);
-  const transformedY = useTransform(mouseY, (y) => Math.round(y / 2) * 2);
+  const transformedX = useTransform(mouseX, (x) => Math.round(x / 5) * 5);
+  const transformedY = useTransform(mouseY, (y) => Math.round(y / 5) * 5);
   
   return { mouseX: transformedX, mouseY: transformedY };
 }
