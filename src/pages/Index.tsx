@@ -1,6 +1,7 @@
-
 import { motion, useScroll, useSpring } from "framer-motion";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Navbar } from "@/components/navbar";
+import LoadingScreen from "@/components/LoadingScreen";
 import { HeroSection } from "@/components/hero-section";
 import { AboutSection } from "@/components/about-section";
 import { ExperienceSection } from "@/components/experience-section";
@@ -9,67 +10,73 @@ import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
-import { useEffect, useState, lazy, Suspense } from "react";
-import SplashCursor from "@/components/SplashCursor";
-
-// Lazily load the starry background for better initial load performance
-const StarryBackground = lazy(() => import("@/components/StarryBackground"));
+import { SplashCursor } from "@/components/SplashCursor";
+import { StarryBackground } from "@/components/StarryBackground";
 
 const Index = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 30, // Much lower stiffness for smoother animation
-    damping: 15,  // Lower damping
-    restDelta: 0.02, // Higher threshold to stop animation sooner
+    stiffness: 30,
+    damping: 15,
+    restDelta: 0.02,
   });
-  
+
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [scrollThrottleTimer, setScrollThrottleTimer] = useState<number | null>(null);
-  
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     setIsMounted(true);
     setIsDesktop(window.innerWidth > 768);
-    
-    // Very throttled scroll handler for better performance
+
     const handleScroll = () => {
       if (scrollThrottleTimer === null) {
         const newTimer = window.setTimeout(() => {
           setShowScrollTop(window.scrollY > 500);
           setScrollThrottleTimer(null);
-        }, 200); // 200ms throttle
-        
+        }, 200);
+
         setScrollThrottleTimer(newTimer);
       }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
-    // Check for window resize to disable cursor on mobile
+
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 768);
     };
-    
+
     window.addEventListener("resize", handleResize, { passive: true });
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
       if (scrollThrottleTimer) window.clearTimeout(scrollThrottleTimer);
     };
   }, [scrollThrottleTimer]);
-  
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="relative scroll-optimized">
-      {/* Only render cursor effect on desktop */}
       {isMounted && isDesktop && <SplashCursor />}
       
-      {/* Lazy load the starry background */}
       <Suspense fallback={null}>
         {isMounted && <StarryBackground />}
       </Suspense>
