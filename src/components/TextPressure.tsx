@@ -7,20 +7,19 @@ interface TextPressureProps {
   className?: string;
 }
 
-// Performance-optimized TextPressure component
 const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
-  // Pre-defined animation variants with reduced intensity
   const hoverVariants = {
     initial: { 
       scale: 1,
       color: "currentColor",
     },
     hover: { 
-      scale: 1.01, // Reduced scale effect
-      transition: { duration: 0.12 } // Faster transition
+      scale: 1.02, 
+      color: "hsl(var(--primary))",
+      transition: { duration: 0.15 } 
     },
     tap: { 
-      scale: 0.99 
+      scale: 0.98 
     }
   };
   
@@ -31,31 +30,27 @@ const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
     },
     hover: { 
       scaleX: 1, 
-      opacity: 0.8,
-      transition: { duration: 0.12 } // Faster transition
+      opacity: 1,
+      transition: { duration: 0.2 } 
     }
   };
 
   return (
     <motion.span
-      className={`inline-block relative ${className}`}
+      className={`inline-block relative cursor-pointer ${className}`}
       variants={hoverVariants}
       initial="initial"
       whileHover="hover"
       whileTap="tap"
-      // Only apply hover animations to larger screens
       style={{ 
-        willChange: "transform",
-        // Use RGB values for colors to avoid HSL animation issues
-        color: "currentColor" 
+        willChange: "transform, color",
       }}
     >
       {children}
       <motion.span 
-        className="absolute bottom-0 left-0 w-full h-[1px]"
+        className="absolute bottom-0 left-0 w-full h-[2px] bg-primary"
         style={{ 
-          background: "currentColor",
-          opacity: 0.3,
+          transformOrigin: "left center",
           willChange: "transform, opacity" 
         }}
         variants={underlineVariants}
@@ -68,3 +63,4 @@ const TextPressure = memo(({ children, className = "" }: TextPressureProps) => {
 TextPressure.displayName = "TextPressure";
 
 export default TextPressure;
+
