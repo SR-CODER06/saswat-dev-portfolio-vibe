@@ -56,21 +56,19 @@ const RegularButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 RegularButton.displayName = "RegularButton"
 
-// Create a motion button component with proper type handling
-const MotionButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
-    // Define motion animation properties
-    const motionProps: HTMLMotionProps<"button"> = {
-      whileHover: { scale: 1.02 },
-      whileTap: { scale: 0.98 },
-      transition: { type: "spring", stiffness: 300, damping: 10 }
-    }
+// Define a separate interface for the motion button that extends ButtonProps
+interface MotionButtonProps extends Omit<ButtonProps, 'asChild'> {}
 
+// Create a motion button component with proper type handling
+const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
+  ({ className, variant, size, ...props }, ref) => {
     return (
       <motion.button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        {...motionProps}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 300, damping: 10 }}
         {...props}
       />
     )
